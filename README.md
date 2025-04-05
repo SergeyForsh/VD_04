@@ -33,6 +33,7 @@ image.
 Создаём базовый код Flask, чтобы запустить проект:
 
 Импортируем класс Flask из модуля:
+
 from flask import Flask
 
 2. Создаём переменную и сохраняем в неё объект класса Flask. Переменная name — это специальная переменная в Python, она содержит в себе имя текущего модуля, помогает фреймворку находить нужные ресурсы, шаблоны истатические файлы. 
@@ -97,10 +98,205 @@ if __name__ == "__main__"
 Множественное декорирование — использование разных адресов для одной страницы.
 
 @app.route("/new/")
-@app.route("/newpage/")
-@app.route("/новаястраница/")
-    return "new page"
 
+@app.route("/newpage/")
+
+@app.route("/новаястраница/")
+
+return "new page"
+
+
+
+Мы можем использовать такую же логику, как в Python. Переменные мы обозначаем треугольными скобками:
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+@app.route("/<name>/")
+def hello_world(name="незнакомец"):
+    return f"Привет, {name}"
+
+if __name__ == "__main__"
+    app.run()
+
+    
+Теперь мы можем написать любое дополнение в адресную строку, и это дополнение будет выводиться на сайте после “Привет”.
+
+Создадим код для введения пароля:
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+@app.route("/<password>/")
+def hello_world(password=None):
+    if password == "1234":
+        return f"Доступ разрешён"
+    else:
+        return f"Доступ запрещён"
+
+if __name__ == "__main__"
+    app.run()
+
+    
+Можно использовать условия, циклы и всё другое, что мы уже изучили.
+
+Также мы можем прописывать HTML (но не очень удобно). Писать мы его будем в тройных кавычках, чтобы можно было писать много строк:
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello_world():
+    html = """
+    <h1>Тестовый запуск локального сервера</h1>
+    <p>А это просто текст</p>
+    """
+    return html
+
+if __name__ == "__main__"
+    app.run()
+
+    
+Работа с HTML при помощи специальной функции:
+
+вариант первый:
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello_world():
+    return flask.render_template() # Внутри () пишем название html-файла в кавычках
+
+if __name__ == "__main__"
+    app.run()
+    
+вариант второй:
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/")
+def hello_world():
+    return render_template() # Внутри () пишем название html-файла в кавычках
+
+if __name__ == "__main__"
+    app.run()
+
+    
+Создаём однотипные страницы: меню, футер, контент:
+
+Открываем файл index.html.
+Подключаем bootstrap, как делали на прошлом уроке.
+Копируем HTML-код из раздела “Навигация и вкладки” в документации:
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Активная</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Ссылка</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Ссылка</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled">Отключенная</а>
+</li>
+</ul>
+            
+4. Вставляем в начале файлов index.html и main.html.
+
+5. Редактируем код в файле index.html. Это будет страница с фильмами.
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Фильмы</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Герои фильмов</a>
+    </li>
+</ul>
+
+6. Редактируем код в файле main.html. Это будет страница с героями фильмов.
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="#">Фильмы</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="#">Герои фильмов</a>
+    </li>
+</ul>
+
+7. Запускаем оба файла по очереди, проверяем.
+
+8. Редактируем код в файле main.py.
+
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/")
+def films():
+    return render_template("index.html")
+    
+@app.route("/person/")
+def person():
+    return render_template("main.html")
+
+if __name__ == "__main__"
+    app.run()
+    
+9. Редактируем код в файле index.html. Меняем вид ссылок.
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/">Фильмы</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/person/">Герои фильмов</a>
+    </li>
+</ul>
+
+10. Редактируем код в файле main.html. Меняем вид ссылок.
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="/">Фильмы</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="/person/">Герои фильмов</a>
+    </li>
+</ul>
+
+11. Меняем заголовки <title> в обоих HTML-файлах.
+
+
+12. Переходим в файл main.py. Запускаем сайт — теперь мы можем переключаться между страницами.
+
+
+13. Редактируем содержимое HTML-файлов, чтобы изменить страницы. При этом пути изображений прописываем полноценно:
+
+”..” означают выйти из папки один раз (пройти выше)
+
+"../static/image/1.jpg"
+
+14. Так же меняем пути файлов в CSS-файлах. При использовании bootstrap используем меньше своих стилей.
+
+15. Заменяем текст на страницах.
+
+Самое важное при работе с Flask:
+
+всё должно быть расположено в папках;
+относительные ссылки должны быть указаны правильно;
+пути до файлов должны быть прописаны правильно.
 
 
 
